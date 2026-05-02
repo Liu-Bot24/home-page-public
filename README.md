@@ -1,19 +1,19 @@
 # Personal Navigation
 
-Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model.
+Personal Navigation 是一个轻量的自托管导航主页，用来放常用链接、快速搜索、便签、天气和 AI 翻译。它适合作为浏览器起始页：可以管理导航分类，使用 Google、百度、必应搜索，查看当前天气，保存一段服务器端便签，并用兼容 OpenAI Chat Completions 的模型做翻译。
 
-Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
+英文文档：[README.md](README.md)
 
-## Features
+## 功能
 
-- Bookmark groups with editable categories and links
-- Google, Baidu, and Bing quick search buttons
-- Weather widget powered by QWeather
-- Local note widget saved on the server
-- Collapsible translation panel with source text, optional context, Markdown output, copy action, and configurable target language
-- Three built-in themes: default, paper-like editorial, and midnight
+- 可编辑的导航分类和链接
+- Google、百度、必应快速搜索按钮
+- 基于和风天气的天气组件
+- 保存在服务器端的轻量便签
+- 可折叠翻译模块，支持原文、补充说明、Markdown 译文、复制和目标语言/自定义目标要求
+- 三个内置主题：默认、纸感、午夜
 
-## Quick Start
+## 快速开始
 
 ```bash
 python3 -m venv .venv
@@ -22,59 +22,59 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open:
+然后打开：
 
 ```text
 http://127.0.0.1:5555
 ```
 
-For production, run it behind your own web server or process manager:
+生产环境可以放在自己的 Web 服务器或进程管理器后面运行：
 
 ```bash
 gunicorn -c gunicorn_conf.py app:app
 ```
 
-## Configuration
+## 配置
 
-Set configuration with environment variables. `env.example` shows the commonly used values.
+推荐用环境变量配置。常用配置项可以参考 `env.example`。
 
-| Variable | What It Controls | Default |
+| 变量 | 作用 | 默认值 |
 | --- | --- | --- |
-| `SITE_TITLE` | Page title and main heading | `Personal Navigation` |
-| `DEFAULT_WEATHER_LOCATION_ID` | Default QWeather location ID | `101010100` |
-| `DEFAULT_WEATHER_LOCATION_NAME` | Default city label shown before weather loads | `Beijing` |
-| `DEFAULT_SEARCH_ENGINE` | Search engine used when pressing Enter in the search box. Valid values: `google`, `baidu`, `bing` | `google` |
-| `SHORTCUT_ONE_LABEL` | Label for the first shortcut card | `Shortcut 1` |
-| `SHORTCUT_ONE_URL` | URL opened by the first shortcut card | `https://example.com/shortcut-1` |
-| `SHORTCUT_TWO_LABEL` | Label for the second shortcut card | `Shortcut 2` |
-| `SHORTCUT_TWO_URL` | URL opened by the second shortcut card | `https://example.com/shortcut-2` |
-| `NAV_DEFAULT_TITLE_FONT` | Heading font for the default theme | `system-ui` |
-| `NAV_DEFAULT_BODY_FONT` | Body and control font for the default theme | `system-ui` |
-| `NAV_EDITORIAL_TITLE_FONT` | Heading font for the paper-like theme | `Songti SC` |
-| `NAV_EDITORIAL_BODY_FONT` | Body and control font for the paper-like theme | `Songti SC` |
-| `NAV_MIDNIGHT_TITLE_FONT` | Heading font for the midnight theme | `Hiragino Sans GB` |
-| `NAV_MIDNIGHT_BODY_FONT` | Body and control font for the midnight theme | `Hiragino Sans GB` |
-| `QWEATHER_API_KEY` | QWeather API key for weather and city search | empty |
-| `NAV_TRANSLATOR_API_KEY` | API key for the translation model provider | empty |
-| `NAV_TRANSLATOR_BASE_URL` | OpenAI-compatible API base URL | `https://api.siliconflow.cn/v1` |
-| `NAV_TRANSLATOR_MODEL` | Chat model used by the translator | `deepseek-ai/DeepSeek-V3.2` |
-| `NAV_TRANSLATOR_TIMEOUT` | Translation request timeout in seconds | `90` |
+| `SITE_TITLE` | 页面标题和主标题 | `Personal Navigation` |
+| `DEFAULT_WEATHER_LOCATION_ID` | 默认和风天气城市 ID | `101010100` |
+| `DEFAULT_WEATHER_LOCATION_NAME` | 天气加载前显示的默认城市名称 | `Beijing` |
+| `DEFAULT_SEARCH_ENGINE` | 搜索框按回车时使用的搜索引擎。可选值：`google`、`baidu`、`bing` | `google` |
+| `SHORTCUT_ONE_LABEL` | 第一个快捷卡片的显示名称 | `Shortcut 1` |
+| `SHORTCUT_ONE_URL` | 第一个快捷卡片打开的地址 | `https://example.com/shortcut-1` |
+| `SHORTCUT_TWO_LABEL` | 第二个快捷卡片的显示名称 | `Shortcut 2` |
+| `SHORTCUT_TWO_URL` | 第二个快捷卡片打开的地址 | `https://example.com/shortcut-2` |
+| `NAV_DEFAULT_TITLE_FONT` | 默认主题标题字体 | `system-ui` |
+| `NAV_DEFAULT_BODY_FONT` | 默认主题正文和控件字体 | `system-ui` |
+| `NAV_EDITORIAL_TITLE_FONT` | 纸感主题标题字体 | `Songti SC` |
+| `NAV_EDITORIAL_BODY_FONT` | 纸感主题正文和控件字体 | `Songti SC` |
+| `NAV_MIDNIGHT_TITLE_FONT` | 午夜主题标题字体 | `Hiragino Sans GB` |
+| `NAV_MIDNIGHT_BODY_FONT` | 午夜主题正文和控件字体 | `Hiragino Sans GB` |
+| `QWEATHER_API_KEY` | 和风天气 API key，用于天气和城市搜索 | 空 |
+| `NAV_TRANSLATOR_API_KEY` | 翻译模型服务的 API key | 空 |
+| `NAV_TRANSLATOR_BASE_URL` | 兼容 OpenAI 的 API base URL | `https://api.siliconflow.cn/v1` |
+| `NAV_TRANSLATOR_MODEL` | 翻译模块使用的聊天模型 | `deepseek-ai/DeepSeek-V3.2` |
+| `NAV_TRANSLATOR_TIMEOUT` | 翻译请求超时时间，单位秒 | `90` |
 
-The translator also accepts `SILICONFLOW_API_KEY` or `DEEPSEEK_API_KEY` if you prefer provider-specific environment variable names.
+翻译模块也支持读取 `SILICONFLOW_API_KEY` 或 `DEEPSEEK_API_KEY`，方便使用供应商命名的环境变量。
 
-Font settings accept CSS font-family values. The app does not ship font files; if a configured font is unavailable, the browser falls back to the system UI font stack.
+字体配置接受 CSS font-family 写法。应用不内置字体文件；如果用户机器没有配置的字体，浏览器会回到系统 UI 字体栈。
 
-You can also configure the translator with a local file:
+也可以用本地配置文件配置翻译模块：
 
 ```bash
 cp translator_config.example.json translator_config.json
 ```
 
-Keep `translator_config.json` on the machine where the app runs. Use environment variables instead if your deployment platform manages secrets for you.
+`translator_config.json` 只放在实际运行应用的机器上。若部署平台支持密钥管理，也可以改用环境变量。
 
-## Navigation Data
+## 导航数据
 
-Edit `data.py` to define the bookmark structure:
+编辑 `data.py` 配置导航分类和链接：
 
 ```python
 websites = {
@@ -92,20 +92,20 @@ websites = {
 }
 ```
 
-Each top-level key is a category. A category can contain subgroups, or it can contain links directly. The edit controls in the page can also update the navigation data and save it back to `data.py`.
+顶层 key 是分类。分类可以继续分组，也可以直接放链接。页面里的编辑控件也能更新导航数据，并保存回 `data.py`。
 
-## Themes
+## 主题
 
-The app includes three theme presets in `app.py`:
+应用在 `app.py` 里内置了三个主题：
 
 - `default`
 - `editorial`
 - `midnight`
 
-The page shows theme switch buttons when presets exist. The selected theme is saved in the browser. You can add a new preset in `THEME_PRESETS` and define matching CSS variables in `static/css/index.css`.
+页面会显示主题切换按钮，浏览器会记住已选择的主题。如果要新增主题，可以在 `THEME_PRESETS` 中加一个主题 ID，并在 `static/css/index.css` 中补对应的 CSS 变量。
 
-## Security Notes
+## 安全说明
 
-This app does not include a login system. If you expose it on the public internet, put it behind your own access control, reverse proxy authentication, VPN, or a private network.
+这个应用不内置登录系统。如果你要把它暴露到公网，请放在自己的访问控制、反向代理认证、VPN 或私有网络后面。
 
-Keep API keys, local translation settings, notes, saved app data, and logs on the server only. Do not publish files that contain personal links, notes, or credentials.
+API key、本地翻译配置、便签、应用保存的数据和日志只应保存在服务器本地。不要公开包含个人链接、便签或凭据的文件。
