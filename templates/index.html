@@ -7,6 +7,16 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png', v=asset_version('static/images/favicon.png')) }}">
     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png', v=asset_version('static/images/favicon.png')) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css', v=asset_version('static/css/index.css')) }}">
+    <style>
+        :root {
+            --app-font-default-title: {{ page_meta.default_title_font|safe }};
+            --app-font-default-body: {{ page_meta.default_body_font|safe }};
+            --app-font-editorial-title: {{ page_meta.editorial_title_font|safe }};
+            --app-font-editorial-body: {{ page_meta.editorial_body_font|safe }};
+            --app-font-midnight-title: {{ page_meta.midnight_title_font|safe }};
+            --app-font-midnight-body: {{ page_meta.midnight_body_font|safe }};
+        }
+    </style>
     <script defer src="{{ url_for('static', filename='js/index.js', v=asset_version('static/js/index.js')) }}"></script>
 </head>
 {% set default_theme = theme_presets[0]['id'] if theme_presets else 'default' %}

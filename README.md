@@ -48,6 +48,12 @@ Set configuration with environment variables. `env.example` shows the commonly u
 | `SHORTCUT_ONE_URL` | URL opened by the first shortcut card | `https://example.com/shortcut-1` |
 | `SHORTCUT_TWO_LABEL` | Label for the second shortcut card | `Shortcut 2` |
 | `SHORTCUT_TWO_URL` | URL opened by the second shortcut card | `https://example.com/shortcut-2` |
+| `NAV_DEFAULT_TITLE_FONT` | Heading font for the default theme | `system-ui` |
+| `NAV_DEFAULT_BODY_FONT` | Body and control font for the default theme | `system-ui` |
+| `NAV_EDITORIAL_TITLE_FONT` | Heading font for the paper-like theme | `Songti SC` |
+| `NAV_EDITORIAL_BODY_FONT` | Body and control font for the paper-like theme | `Songti SC` |
+| `NAV_MIDNIGHT_TITLE_FONT` | Heading font for the midnight theme | `Hiragino Sans GB` |
+| `NAV_MIDNIGHT_BODY_FONT` | Body and control font for the midnight theme | `Hiragino Sans GB` |
 | `QWEATHER_API_KEY` | QWeather API key for weather and city search | empty |
 | `NAV_TRANSLATOR_API_KEY` | API key for the translation model provider | empty |
 | `NAV_TRANSLATOR_BASE_URL` | OpenAI-compatible API base URL | `https://api.siliconflow.cn/v1` |
@@ -55,6 +61,8 @@ Set configuration with environment variables. `env.example` shows the commonly u
 | `NAV_TRANSLATOR_TIMEOUT` | Translation request timeout in seconds | `90` |
 
 The translator also accepts `SILICONFLOW_API_KEY` or `DEEPSEEK_API_KEY` if you prefer provider-specific environment variable names.
+
+Font settings accept CSS font-family values. The app does not ship font files; if a configured font is unavailable, the browser falls back to the system UI font stack.
 
 You can also configure the translator with a local file:
 

@@ -6,6 +6,12 @@
     --radius-sm: 0.7rem;
     --header-gap: 1rem;
     --transition: 180ms ease;
+    --app-font-default-title: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --app-font-default-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --app-font-editorial-title: Songti SC, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --app-font-editorial-body: Songti SC, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --app-font-midnight-title: Hiragino Sans GB, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --app-font-midnight-body: Hiragino Sans GB, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 *,
@@ -40,14 +46,14 @@ body {
     --shadow-lg: 0 2px 12px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.05);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-    --font-title: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-title: var(--app-font-default-title);
+    --font-body: var(--app-font-default-body);
     --grid-columns: 12;
     margin: 0;
     min-height: 100vh;
     padding: 0.9rem;
     color: var(--text-primary);
-    font-family: var(--font-body);
+    font-family: var(--app-font-default-body);
     line-height: 1.45;
     background: var(--page-base);
     position: relative;
@@ -102,6 +108,9 @@ body[data-theme="editorial"] {
     --shadow-lg: 0 30px 64px rgba(93, 67, 37, 0.14);
     --shadow-md: 0 16px 34px rgba(99, 74, 43, 0.12);
     --shadow-sm: 0 10px 22px rgba(99, 74, 43, 0.08);
+    --font-title: var(--app-font-editorial-title);
+    --font-body: var(--app-font-editorial-body);
+    font-family: var(--app-font-editorial-body);
 }
 
 body[data-theme="midnight"] {
@@ -126,6 +135,9 @@ body[data-theme="midnight"] {
     --shadow-lg: 0 32px 68px rgba(2, 6, 15, 0.42);
     --shadow-md: 0 16px 34px rgba(2, 6, 15, 0.28);
     --shadow-sm: 0 10px 22px rgba(2, 6, 15, 0.22);
+    --font-title: var(--app-font-midnight-title);
+    --font-body: var(--app-font-midnight-body);
+    font-family: var(--app-font-midnight-body);
 }
 
 body[data-theme="midnight"] #search-input,
@@ -220,7 +232,6 @@ body[data-theme="midnight"] .search-buttons button[data-engine="bing"] {
     color: var(--text-primary);
 }
 
-body,
 button,
 input,
 textarea {
@@ -670,6 +681,7 @@ img {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    font-family: var(--font-title);
     font-size: 1.22rem;
     font-weight: 800;
 }

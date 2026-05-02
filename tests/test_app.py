@@ -64,6 +64,29 @@ class AppRouteTests(unittest.TestCase):
         self.assertIn('Personal Navigation', body)
         self.assertIn('Example Site', body)
         self.assertIn('Example App', body)
+        self.assertIn('--app-font-default-title:', body)
+        self.assertIn('--app-font-default-body:', body)
+        self.assertIn('--app-font-editorial-title:', body)
+        self.assertIn('--app-font-editorial-body:', body)
+        self.assertIn('--app-font-midnight-title:', body)
+        self.assertIn('--app-font-midnight-body:', body)
+        self.assertIn('Songti SC', body)
+        self.assertIn('Hiragino Sans GB', body)
+
+    def test_font_stack_sanitizer_rejects_css_breakout(self):
+        self.assertEqual(
+            app_module.css_font_stack('Songti SC; color: red', 'fallback'),
+            'fallback',
+        )
+        self.assertEqual(
+            app_module.css_font_stack('"Songti SC, system-ui"', 'fallback'),
+            'Songti SC, system-ui',
+        )
+
+    def test_themed_font_stack_adds_system_fallback(self):
+        stack = app_module.themed_font_stack('Songti SC', 'system-ui')
+        self.assertTrue(stack.startswith('Songti SC, '))
+        self.assertIn('system-ui', stack)
 
     def test_note_round_trip_uses_project_root_file(self):
         get_response = self.client.get('/api/note')

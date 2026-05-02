@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>中文字体样张</title>
+  <style>
+    :root {
+      --page: #f3eee6;
+      --ink: #251a14;
+      --muted: #766858;
+      --line: rgba(91, 67, 42, 0.16);
+      --panel: rgba(255, 252, 247, 0.88);
+      --accent: #9b5f2e;
+      --accent-soft: rgba(155, 95, 46, 0.12);
+      --shadow: 0 18px 50px rgba(83, 61, 35, 0.13);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 10%, rgba(180, 139, 82, 0.18), transparent 24%),
+        linear-gradient(135deg, #efe2d0, #faf7f1 46%, #eadfce);
+    }
+
+    main {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      letter-spacing: 0;
+      font-family: "Songti SC", "STSong", "SimSun", serif;
+    }
+
+    .intro {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .sample-control {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      margin: 0 0 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 252, 247, 0.74);
+      box-shadow: var(--shadow);
+    }
+
+    .sample-control label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      padding: 14px 16px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      font: inherit;
+      line-height: 1.7;
+    }
+
+    textarea:focus {
+      border-color: rgba(155, 95, 46, 0.38);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .section-title {
+      margin: 30px 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 16px;
+    }
+
+    .font-card {
+      display: grid;
+      gap: 16px;
+      min-height: 320px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .font-name {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 900;
+    }
+
+    .status {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #8b5a2b;
+      background: rgba(155, 95, 46, 0.12);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status.available {
+      color: #236044;
+      background: rgba(34, 150, 96, 0.14);
+    }
+
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .specimen {
+      display: grid;
+      gap: 12px;
+      padding-top: 2px;
+      font-family: var(--preview-font);
+    }
+
+    .specimen-title {
+      margin: 0;
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.12;
+    }
+
+    .specimen-text {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.75;
+    }
+
+    .nav-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-family: var(--preview-font);
+    }
+
+    .chip {
+      min-width: 76px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.36);
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .chip.primary {
+      color: #fff;
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 18px;
+      }
+
+      .font-card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" aria-label="页面说明">
+      <h1>中文字体样张</h1>
+      <p class="intro">下面这些是比较适合当前导航站气质的中文字体候选。绿色表示浏览器检测到本机大概率可用；棕色表示可能会回退到后备字体。可以直接改上面的样张文字，看长文本、标题、按钮在不同字体里的感觉。</p>
+    </section>
+
+    <section class="sample-control" aria-label="样张文本">
+      <label for="sample-text">样张文字</label>
+      <textarea id="sample-text" spellcheck="false">刘琦的网址导航
+把英语、日语、文言文或专业段落翻译成现代简体中文。若遇到技术词汇，在译文后附一段简短解释。</textarea>
+    </section>
+
+    <h2 class="section-title">Serif / 书卷感候选</h2>
+    <section class="grid" id="serif-grid"></section>
+
+    <h2 class="section-title">Sans / 稳妥界面候选</h2>
+    <section class="grid" id="sans-grid"></section>
+  </main>
+
+  <template id="font-card-template">
+    <article class="font-card">
+      <div class="card-top">
+        <div>
+          <h3 class="font-name"></h3>
+          <p class="meta"></p>
+        </div>
+        <span class="status">检测中</span>
+      </div>
+      <div class="specimen">
+        <p class="specimen-title"></p>
+        <p class="specimen-text"></p>
+        <div class="nav-strip" aria-hidden="true">
+          <span class="chip primary">翻译</span>
+          <span class="chip">工具</span>
+          <span class="chip">社区</span>
+          <span class="chip primary">搜索</span>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const serifFonts = [
+      {
+        name: "Songti SC",
+        stack: '"Songti SC", system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+        note: "纸感主题候选。先用 Songti SC，没有就直接回到 macOS/Windows 系统默认字体。"
+      },
+      {
+        name: "STSong",
+        stack: '"STSong", "Songti SC", "SimSun", serif',
+        note: "更传统的宋体走向，气质偏旧书页。适合想要一点文气但不太花的页面。"
+      },
+      {
+        name: "SimSun / 宋体",
+        stack: '"SimSun", "Songti SC", "STSong", serif',
+        note: "Windows 经典宋体风格。跨平台时常作为后备，锐利但稍显朴素。"
+      },
+      {
+        name: "FangSong / 仿宋",
+        stack: '"FangSong", "STFangsong", "FangSong_GB2312", serif',
+        note: "书信、公文、古文感更明显。适合点缀，不建议整站大量正文。"
+      },
+      {
+        name: "Kaiti SC / 楷体",
+        stack: '"Kaiti SC", "STKaiti", "KaiTi", serif',
+        note: "手写书卷味强，偏古风最明显。适合标题或小标签，按钮上会比较有性格。"
+      },
+      {
+        name: "LiSong Pro",
+        stack: '"LiSong Pro", "Songti SC", "STSong", serif',
+        note: "更细、更像出版物的宋体感觉。如果本机可用，标题会很雅。"
+      },
+      {
+        name: "Hiragino Mincho ProN",
+        stack: '"Hiragino Mincho ProN", "Songti SC", serif',
+        note: "日文明朝体方向，中文会看系统支持情况。适合日文和汉字混排测试。"
+      }
+    ];
+
+    const sansFonts = [
+      {
+        name: "Avenir Next",
+        stack: '"Avenir Next", system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+        note: "英文和数字很利落，适合做深色主题的英文标题；中文内容会自然回到系统字体。"
+      },
+      {
+        name: "PingFang SC",
+        stack: '"PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif',
+        note: "macOS 默认中文界面字体，稳、干净、不抢戏。适合正文和控件。"
+      },
+      {
+        name: "Noto Sans SC",
+        stack: '"Noto Sans SC", "PingFang SC", sans-serif',
+        note: "你本机用户字体里有。字形更中性，长文本更规整。"
+      },
+      {
+        name: "Hiragino Sans GB",
+        stack: '"Hiragino Sans GB", "PingFang SC", sans-serif',
+        note: "午夜主题候选。macOS 自带，中文黑体里有一点日系清爽感，深色背景里比较干净。"
+      },
+      {
+        name: "STHeiti",
+        stack: '"STHeiti", "Heiti SC", "PingFang SC", sans-serif',
+        note: "老 macOS 黑体风格，厚重直接。适合作为兜底，不一定适合当前主视觉。"
+      }
+    ];
+
+    const sampleInput = document.getElementById("sample-text");
+    const template = document.getElementById("font-card-template");
+
+    function renderFonts(fonts, targetId) {
+      const target = document.getElementById(targetId);
+      target.innerHTML = "";
+      for (const font of fonts) {
+        const card = template.content.firstElementChild.cloneNode(true);
+        card.style.setProperty("--preview-font", font.stack);
+        card.querySelector(".font-name").textContent = font.name;
+        card.querySelector(".meta").textContent = font.note;
+        card.dataset.fontName = font.name;
+        card.dataset.fontStack = font.stack;
+        target.appendChild(card);
+      }
+    }
+
+    function syncSampleText() {
+      const lines = sampleInput.value.trim().split(/\n+/);
+      const title = lines[0] || "刘琦的网址导航";
+      const body = lines.slice(1).join(" ") || "把英语、日语、文言文或专业段落翻译成现代简体中文。";
+      document.querySelectorAll(".specimen-title").forEach(node => node.textContent = title);
+      document.querySelectorAll(".specimen-text").forEach(node => node.textContent = body);
+    }
+
+    function textWidth(fontFamily, baseFamily) {
+      const canvas = textWidth.canvas || (textWidth.canvas = document.createElement("canvas"));
+      const context = canvas.getContext("2d");
+      context.font = `72px ${fontFamily}, ${baseFamily}`;
+      return context.measureText("刘琦的网址导航 Translation 1234567890").width;
+    }
+
+    function detectFont(fontName) {
+      const quoted = `"${fontName}"`;
+      const bases = ["serif", "sans-serif", "monospace"];
+      return bases.some(base => Math.abs(textWidth(quoted, base) - textWidth("definitely-not-a-real-font", base)) > 0.5);
+    }
+
+    function detectAvailability() {
+      document.querySelectorAll(".font-card").forEach(card => {
+        const status = card.querySelector(".status");
+        const names = card.dataset.fontStack
+          .match(/"([^"]+)"/g)
+          ?.map(name => name.replaceAll('"', "")) || [];
+        const available = names.find(detectFont);
+        if (available) {
+          status.textContent = `可用：${available}`;
+          status.classList.add("available");
+        } else {
+          status.textContent = "可能回退";
+          status.classList.remove("available");
+        }
+      });
+    }
+
+    renderFonts(serifFonts, "serif-grid");
+    renderFonts(sansFonts, "sans-grid");
+    syncSampleText();
+    detectAvailability();
+    sampleInput.addEventListener("input", syncSampleText);
+  </script>
+</body>
+</html>

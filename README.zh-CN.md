@@ -48,6 +48,12 @@ gunicorn -c gunicorn_conf.py app:app
 | `SHORTCUT_ONE_URL` | 第一个快捷卡片打开的地址 | `https://example.com/shortcut-1` |
 | `SHORTCUT_TWO_LABEL` | 第二个快捷卡片的显示名称 | `Shortcut 2` |
 | `SHORTCUT_TWO_URL` | 第二个快捷卡片打开的地址 | `https://example.com/shortcut-2` |
+| `NAV_DEFAULT_TITLE_FONT` | 默认主题标题字体 | `system-ui` |
+| `NAV_DEFAULT_BODY_FONT` | 默认主题正文和控件字体 | `system-ui` |
+| `NAV_EDITORIAL_TITLE_FONT` | 纸感主题标题字体 | `Songti SC` |
+| `NAV_EDITORIAL_BODY_FONT` | 纸感主题正文和控件字体 | `Songti SC` |
+| `NAV_MIDNIGHT_TITLE_FONT` | 午夜主题标题字体 | `Hiragino Sans GB` |
+| `NAV_MIDNIGHT_BODY_FONT` | 午夜主题正文和控件字体 | `Hiragino Sans GB` |
 | `QWEATHER_API_KEY` | 和风天气 API key，用于天气和城市搜索 | 空 |
 | `NAV_TRANSLATOR_API_KEY` | 翻译模型服务的 API key | 空 |
 | `NAV_TRANSLATOR_BASE_URL` | 兼容 OpenAI 的 API base URL | `https://api.siliconflow.cn/v1` |
@@ -55,6 +61,8 @@ gunicorn -c gunicorn_conf.py app:app
 | `NAV_TRANSLATOR_TIMEOUT` | 翻译请求超时时间，单位秒 | `90` |
 
 翻译模块也支持读取 `SILICONFLOW_API_KEY` 或 `DEEPSEEK_API_KEY`，方便使用供应商命名的环境变量。
+
+字体配置接受 CSS font-family 写法。应用不内置字体文件；如果用户机器没有配置的字体，浏览器会回到系统 UI 字体栈。
 
 也可以用本地配置文件配置翻译模块：
 

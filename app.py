@@ -28,6 +28,13 @@ SHORTCUT_ONE_URL = os.getenv('SHORTCUT_ONE_URL') or 'https://example.com/shortcu
 SHORTCUT_TWO_LABEL = os.getenv('SHORTCUT_TWO_LABEL') or 'Shortcut 2'
 SHORTCUT_TWO_URL = os.getenv('SHORTCUT_TWO_URL') or 'https://example.com/shortcut-2'
 QWEATHER_KEY = os.getenv('QWEATHER_API_KEY') or os.getenv('WEATHER_KEY') or ''
+SYSTEM_FONT_STACK = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
+DEFAULT_THEME_TITLE_FONT = 'system-ui'
+DEFAULT_THEME_BODY_FONT = 'system-ui'
+DEFAULT_EDITORIAL_TITLE_FONT = 'Songti SC'
+DEFAULT_EDITORIAL_BODY_FONT = 'Songti SC'
+DEFAULT_MIDNIGHT_TITLE_FONT = 'Hiragino Sans GB'
+DEFAULT_MIDNIGHT_BODY_FONT = 'Hiragino Sans GB'
 DEFAULT_TRANSLATOR_BASE_URL = 'https://api.siliconflow.cn/v1'
 DEFAULT_TRANSLATOR_MODEL = 'deepseek-ai/DeepSeek-V3.2'
 TRANSLATOR_SOURCE_LIMIT = 24000
@@ -51,6 +58,32 @@ def asset_version(relative_path: str) -> int:
 
 
 app.jinja_env.globals['asset_version'] = asset_version
+
+
+def css_font_stack(value: Optional[str], fallback: str) -> str:
+    font_stack = (value or '').strip()
+    if len(font_stack) >= 2 and font_stack[0] == font_stack[-1] and font_stack[0] in {'"', "'"}:
+        font_stack = font_stack[1:-1].strip()
+    if not font_stack:
+        return fallback
+    if len(font_stack) > 500 or any(char in font_stack for char in '{};<>\\\n\r'):
+        return fallback
+    return font_stack
+
+
+def themed_font_stack(value: Optional[str], default_font: str) -> str:
+    font_stack = css_font_stack(value, default_font)
+    if font_stack == 'system-ui' or font_stack == SYSTEM_FONT_STACK:
+        return SYSTEM_FONT_STACK
+    return f'{font_stack}, {SYSTEM_FONT_STACK}'
+
+
+DEFAULT_TITLE_FONT = themed_font_stack(os.getenv('NAV_DEFAULT_TITLE_FONT'), DEFAULT_THEME_TITLE_FONT)
+DEFAULT_BODY_FONT = themed_font_stack(os.getenv('NAV_DEFAULT_BODY_FONT'), DEFAULT_THEME_BODY_FONT)
+EDITORIAL_TITLE_FONT = themed_font_stack(os.getenv('NAV_EDITORIAL_TITLE_FONT'), DEFAULT_EDITORIAL_TITLE_FONT)
+EDITORIAL_BODY_FONT = themed_font_stack(os.getenv('NAV_EDITORIAL_BODY_FONT'), DEFAULT_EDITORIAL_BODY_FONT)
+MIDNIGHT_TITLE_FONT = themed_font_stack(os.getenv('NAV_MIDNIGHT_TITLE_FONT'), DEFAULT_MIDNIGHT_TITLE_FONT)
+MIDNIGHT_BODY_FONT = themed_font_stack(os.getenv('NAV_MIDNIGHT_BODY_FONT'), DEFAULT_MIDNIGHT_BODY_FONT)
 
 
 def _atomic_write_text(target: Path, content: str) -> None:
@@ -273,6 +306,12 @@ def index():
             'shortcut_one_url': SHORTCUT_ONE_URL,
             'shortcut_two_label': SHORTCUT_TWO_LABEL,
             'shortcut_two_url': SHORTCUT_TWO_URL,
+            'default_title_font': DEFAULT_TITLE_FONT,
+            'default_body_font': DEFAULT_BODY_FONT,
+            'editorial_title_font': EDITORIAL_TITLE_FONT,
+            'editorial_body_font': EDITORIAL_BODY_FONT,
+            'midnight_title_font': MIDNIGHT_TITLE_FONT,
+            'midnight_body_font': MIDNIGHT_BODY_FONT,
             'site_count': sum(
                 len(sites)
                 for category in websites.values()
