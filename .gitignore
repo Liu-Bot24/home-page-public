@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.pid
+.env
+.venv/
+venv/
+env/
+instance/
+note.json
+translator_config.json
+*.log

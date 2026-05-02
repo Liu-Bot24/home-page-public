@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_meta.title }}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png', v=asset_version('static/images/favicon.png')) }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png', v=asset_version('static/images/favicon.png')) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css', v=asset_version('static/css/index.css')) }}">
+    <script defer src="{{ url_for('static', filename='js/index.js', v=asset_version('static/js/index.js')) }}"></script>
+</head>
+{% set default_theme = theme_presets[0]['id'] if theme_presets else 'default' %}
+<body data-default-theme="{{ default_theme }}" data-theme="{{ default_theme }}" data-theme-order="{% for theme in theme_presets %}{{ theme.id }}{% if not loop.last %},{% endif %}{% endfor %}" data-default-city-id="{{ page_meta.default_city_id }}" data-default-city-name="{{ page_meta.default_city_name }}" data-default-search-engine="{{ page_meta.default_search_engine }}">
+    {% macro site_card(site) -%}
+    <div class="site-card" draggable="false">
+        <a href="{{ site.url }}" target="_blank" rel="noreferrer">{{ site.name }}</a>
+        <div class="card-actions">
+            <button type="button" class="card-action edit-btn" data-action="edit-site" title="编辑" aria-label="编辑">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                </svg>
+            </button>
+            <button type="button" class="card-action delete-btn" data-action="delete-site" title="删除" aria-label="删除">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    {%- endmacro %}
+
+    <div class="page-shell">
+        {% if theme_presets %}
+        <div class="page-tools" aria-label="主题切换">
+            <button type="button" class="theme-icon-button" data-theme-step="-1" title="上一个主题" aria-label="上一个主题">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+            <button type="button" class="theme-icon-button" data-theme-step="1" title="下一个主题" aria-label="下一个主题">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L11.586 10 7.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+        {% endif %}
+        <h1 class="main-title">{{ page_meta.title }}</h1>
+        <header class="header">
+            <div class="header-content">
+                <div class="widget weather-widget">
+                    <div class="weather-info">
+                        <span class="weather-temp" aria-live="polite">获取中...</span>
+                        <span class="weather-desc" aria-live="polite"></span>
+                        <button type="button" class="weather-location" data-open-city-modal>{{ page_meta.default_city_name }}</button>
+                    </div>
+                    <span class="weather-icon" aria-hidden="true"></span>
+                </div>
+
+                <div class="widget datetime-widget" aria-live="polite">
+                    <div class="datetime-copy">
+                        <div class="datetime-time">00:00</div>
+                        <div class="datetime-date">2024年1月1日</div>
+                    </div>
+                </div>
+
+                <a href="{{ page_meta.shortcut_one_url }}" target="_blank" rel="noreferrer" class="widget widget-link shortcut-widget" aria-label="{{ page_meta.shortcut_one_label }}">
+                    <span class="shortcut-text">{{ page_meta.shortcut_one_label }}</span>
+                </a>
+
+                <a href="{{ page_meta.shortcut_two_url }}" target="_blank" rel="noreferrer" class="widget widget-link shortcut-widget" aria-label="{{ page_meta.shortcut_two_label }}">
+                    <span class="shortcut-text">{{ page_meta.shortcut_two_label }}</span>
+                </a>
+
+                <div class="note-widget">
+                    <textarea placeholder="在这里输入便签内容..." aria-label="便签内容" spellcheck="false"></textarea>
+                    <button type="button" class="note-save-btn" data-action="save-note" aria-label="保存便签">
+                        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <form id="search-form" autocomplete="off">
+                        <label class="visually-hidden" for="search-input">搜索关键词</label>
+                        <input type="text" id="search-input" placeholder="输入关键词搜索..." spellcheck="false">
+                        <div class="search-buttons" aria-label="搜索引擎选择">
+                            <button type="button" data-engine="google">谷歌</button>
+                            <button type="button" data-engine="baidu">百度</button>
+                            <button type="button" data-engine="bing">必应</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <section class="translator-module is-collapsed" data-translator>
+            <div class="translator-header">
+                <h2 class="category-title">翻译</h2>
+                <div class="translator-controls">
+                    <button type="button" class="control-button translator-toggle" data-action="toggle-translator" aria-expanded="false" aria-controls="translator-body" title="展开/收起翻译" aria-label="展开或收起翻译模块">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="translator-body" id="translator-body">
+                <div class="translator-editor">
+                    <label for="translator-source">原文</label>
+                    <div class="translator-input-wrap">
+                        <textarea id="translator-source" data-translator-source rows="4" spellcheck="false"></textarea>
+                        <button type="button" class="translator-inline-action translator-submit" data-action="translate-text" title="翻译" aria-label="翻译原文">
+                            <span class="translator-round-mark" aria-hidden="true">译</span>
+                        </button>
+                    </div>
+
+                    <details class="translator-context">
+                        <summary>补充说明</summary>
+                        <label class="visually-hidden" for="translator-context-input">补充说明</label>
+                        <textarea id="translator-context-input" data-translator-context rows="3" spellcheck="false"></textarea>
+                    </details>
+                </div>
+
+                <section class="translator-result" aria-label="译文">
+                    <div class="translator-result-header">
+                        <div class="translator-language-menu" data-translator-language-menu>
+                            <button type="button" class="translator-language-trigger" data-action="toggle-language-menu" aria-expanded="false" aria-controls="translator-language-popover">
+                                <span>译文</span>
+                                <span class="visually-hidden" data-language-current>简体中文</span>
+                            </button>
+                            <div class="translator-language-popover" id="translator-language-popover" data-language-popover hidden>
+                                <div class="translator-language-options" aria-label="译文语言">
+                                    <button type="button" data-language-option="简体中文">简体中文</button>
+                                    <button type="button" data-language-option="繁体中文">繁体中文</button>
+                                    <button type="button" data-language-option="英文">英文</button>
+                                    <button type="button" data-language-option="日文">日文</button>
+                                </div>
+                                <div class="translator-custom-row">
+                                    <label class="visually-hidden" for="translator-custom-language">自定义目标要求</label>
+                                    <input type="text" id="translator-custom-language" data-language-custom-input autocomplete="off">
+                                    <button type="button" data-action="select-custom-language">自定义</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="translator-output-wrap">
+                        <div class="translator-output" data-translator-output aria-live="polite"></div>
+                        <button type="button" class="translator-inline-action translator-copy" data-action="copy-translation" title="复制译文" aria-label="复制译文" disabled>
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M8 2a2 2 0 00-2 2v1H5a2 2 0 00-2 2v9a2 2 0 002 2h7a2 2 0 002-2v-1h1a2 2 0 002-2V4a2 2 0 00-2-2H8zm6 11V7a2 2 0 00-2-2H8V4h7v9h-1zM5 7h7v9H5V7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="translator-status" data-translator-status aria-live="polite"></div>
+                </section>
+            </div>
+        </section>
+
+        <main class="catalog">
+            {% for category_name, category_content in websites.items() %}
+            <section class="category {% if not category_content is mapping %}no-subcategory{% endif %}">
+                <div class="category-header">
+                    <h2 class="category-title">{{ category_name }}</h2>
+                    <div class="category-controls">
+                        <button type="button" class="control-button toggle-visibility" data-action="toggle-visibility" title="显示/隐藏" aria-label="显示或隐藏分类">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="control-button toggle-edit" data-action="toggle-edit" title="编辑模式" aria-label="切换编辑模式">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sites-grid">
+                    {% if category_content is mapping %}
+                        {% for subcategory_name, sites in category_content.items() %}
+                            <div class="subcategory-card">{{ subcategory_name }}</div>
+                            {% for site in sites %}
+                                {{ site_card(site) }}
+                            {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        {% for site in category_content %}
+                            {{ site_card(site) }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <button type="button" class="add-site-btn" data-action="add-site">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    添加网站
+                </button>
+            </section>
+            {% endfor %}
+        </main>
+    </div>
+
+    <div class="modal edit-modal" hidden>
+        <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="edit-modal-title">编辑网站</h2>
+                <button type="button" class="modal-close" data-close-modal="edit" aria-label="关闭编辑窗口">X</button>
+            </div>
+            <div class="modal-field">
+                <label for="edit-name">网站名称</label>
+                <input type="text" id="edit-name" placeholder="网站名称" autocomplete="off">
+            </div>
+            <div class="modal-field">
+                <label for="edit-url">网站地址</label>
+                <input type="text" id="edit-url" placeholder="网站地址" autocomplete="off">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="button" data-action="cancel-site">取消</button>
+                <button type="button" class="button button-primary" data-action="save-site">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal city-modal" hidden>
+        <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="city-modal-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="city-modal-title">切换城市</h2>
+                <button type="button" class="modal-close" data-close-modal="city" aria-label="关闭城市窗口">X</button>
+            </div>
+            <div class="modal-field">
+                <label for="city-search-input">搜索城市</label>
+                <input type="text" id="city-search-input" placeholder="搜索城市..." autocomplete="off">
+            </div>
+            <div class="city-list" role="listbox" aria-label="城市搜索结果"></div>
+        </div>
+    </div>
+</body>
+</html>
