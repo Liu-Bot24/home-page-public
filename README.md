@@ -2,7 +2,15 @@
 
 Personal Navigation 是一个轻量的自托管导航主页，用来放常用链接、快速搜索、便签、天气和 AI 翻译。它适合作为浏览器起始页：可以管理导航分类，使用 Google、百度、必应搜索，查看当前天气，保存一段服务器端便签，并用兼容 OpenAI Chat Completions 的模型做翻译。
 
-英文文档：[README.md](README.md)
+英文文档：[README.en.md](README.en.md)
+
+## 示意图
+
+![默认主题](docs/images/screenshot-1.jpg)
+
+![纸感主题](docs/images/screenshot-2.jpg)
+
+![午夜主题](docs/images/screenshot-3.jpg)
 
 ## 功能
 
@@ -12,6 +20,8 @@ Personal Navigation 是一个轻量的自托管导航主页，用来放常用链
 - 保存在服务器端的轻量便签
 - 可折叠翻译模块，支持原文、补充说明、Markdown 译文、复制和目标语言/自定义目标要求
 - 三个内置主题：默认、纸感、午夜
+
+翻译模块默认按简体中文输出。展开翻译后，点击“译文”两个字可以切换目标语言，也可以输入自定义目标要求。
 
 ## 快速开始
 

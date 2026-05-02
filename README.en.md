@@ -2,7 +2,15 @@
 
 Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model.
 
-Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
+中文文档：[README.md](README.md)
+
+## Screenshots
+
+![Default theme](docs/images/screenshot-1.jpg)
+
+![Paper-like theme](docs/images/screenshot-2.jpg)
+
+![Midnight theme](docs/images/screenshot-3.jpg)
 
 ## Features
 
@@ -12,6 +20,8 @@ Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
 - Local note widget saved on the server
 - Collapsible translation panel with source text, optional context, Markdown output, copy action, and configurable target language
 - Three built-in themes: default, paper-like editorial, and midnight
+
+The translator defaults to Simplified Chinese. After expanding the panel, click the “译文” label to switch the target language or enter a custom target instruction.
 
 ## Quick Start
 
