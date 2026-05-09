@@ -24,6 +24,7 @@
             citySearchTimer: null,
             citySearchController: null,
             dragCard: null,
+            dragTarget: null,
             isSavingNote: false,
             isTranslating: false,
             lastTranslation: "",
@@ -270,6 +271,7 @@
             grid.addEventListener("dragover", (event) => handleGridDragOver(event, state));
             grid.addEventListener("drop", (event) => {
                 event.preventDefault();
+                commitDragTarget(event.currentTarget, state);
                 hideGridIndicator(event.currentTarget);
             });
         });
@@ -981,42 +983,93 @@
 
         event.preventDefault();
         const indicator = grid.querySelector(".drag-indicator");
-        const closestCard = getClosestCard(grid, event.clientX, event.clientY);
+        const insertionTarget = getInsertionTarget(grid, event.clientX, event.clientY);
+        state.dragTarget = insertionTarget ? { ...insertionTarget, grid } : { grid, element: null, placeAfter: true };
 
-        if (!closestCard) {
-            grid.appendChild(state.dragCard);
+        if (!insertionTarget) {
             indicator.style.display = "none";
             return;
         }
 
+        const { element: closestCard, placeAfter } = insertionTarget;
         const cardRect = closestCard.getBoundingClientRect();
         const gridRect = grid.getBoundingClientRect();
-        const placeAfter = event.clientY > cardRect.top + cardRect.height / 2;
 
         indicator.style.display = "block";
         indicator.style.height = `${cardRect.height}px`;
         indicator.style.left = `${(placeAfter ? cardRect.right : cardRect.left) - gridRect.left}px`;
         indicator.style.top = `${cardRect.top - gridRect.top}px`;
-
-        if (placeAfter) {
-            grid.insertBefore(state.dragCard, closestCard.nextSibling);
-        } else {
-            grid.insertBefore(state.dragCard, closestCard);
-        }
     }
 
-    function getClosestCard(container, x, y) {
+    function getInsertionTarget(container, x, y) {
         const cards = Array.from(container.querySelectorAll(".site-card:not(.dragging)"));
-        return cards.reduce(
-            (closest, card) => {
-                const box = card.getBoundingClientRect();
-                const offsetX = x - (box.left + box.width / 2);
-                const offsetY = y - (box.top + box.height / 2);
-                const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-                return distance < closest.distance ? { distance, element: card } : closest;
-            },
-            { distance: Number.POSITIVE_INFINITY, element: null },
-        ).element;
+        const rows = getCardRows(cards);
+        if (!rows.length) {
+            return null;
+        }
+
+        const targetRow = rows.reduce((closest, row) => {
+            const distance = Math.abs(y - row.centerY);
+            return distance < closest.distance ? { distance, row } : closest;
+        }, { distance: Number.POSITIVE_INFINITY, row: null }).row;
+        const rowCards = targetRow.cards;
+        const beforeCard = rowCards.find(({ centerX }) => x < centerX);
+
+        if (beforeCard) {
+            return { element: beforeCard.element, placeAfter: false };
+        }
+
+        return { element: rowCards[rowCards.length - 1].element, placeAfter: true };
+    }
+
+    function getCardRows(cards) {
+        return cards
+            .map((element) => {
+                const box = element.getBoundingClientRect();
+                return {
+                    element,
+                    box,
+                    centerX: box.left + box.width / 2,
+                    centerY: box.top + box.height / 2,
+                };
+            })
+            .sort((a, b) => a.centerY - b.centerY || a.centerX - b.centerX)
+            .reduce((rows, card) => {
+                const row = rows[rows.length - 1];
+                const rowThreshold = Math.max(6, card.box.height / 2);
+                if (!row || Math.abs(card.centerY - row.centerY) > rowThreshold) {
+                    rows.push({ centerY: card.centerY, cards: [card] });
+                    return rows;
+                }
+
+                row.cards.push(card);
+                row.centerY = row.cards.reduce((sum, item) => sum + item.centerY, 0) / row.cards.length;
+                row.cards.sort((a, b) => a.centerX - b.centerX);
+                return rows;
+            }, []);
+    }
+
+    function commitDragTarget(grid, state) {
+        if (!state.dragCard) {
+            return;
+        }
+
+        const target = state.dragTarget?.grid === grid ? state.dragTarget : null;
+        if (!target?.element || target.element.parentNode !== grid) {
+            grid.appendChild(state.dragCard);
+            return;
+        }
+
+        if (target.placeAfter) {
+            if (state.dragCard.previousElementSibling !== target.element) {
+                grid.insertBefore(state.dragCard, target.element.nextSibling);
+            }
+            return;
+        }
+
+        if (state.dragCard.nextElementSibling !== target.element) {
+            grid.insertBefore(state.dragCard, target.element);
+        }
     }
 
     function hideGridIndicator(grid) {
@@ -1034,6 +1087,7 @@
             indicator.style.display = "none";
         });
         state.dragCard = null;
+        state.dragTarget = null;
     }
 
     function collectWebsitesData() {
