@@ -1,5 +1,7 @@
 # Personal Navigation
 
+![Personal Navigation promotional banner](docs/images/promo-en.jpg)
+
 Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model.
 
 中文文档：[README.md](README.md)
