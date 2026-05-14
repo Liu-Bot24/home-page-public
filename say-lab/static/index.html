@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Say Lab</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-default-theme="default" data-theme="default" data-theme-order="default,editorial,midnight">
+    <div class="page-tools" aria-label="主题切换">
+      <button type="button" class="theme-icon-button" data-theme-step="-1" title="上一个主题" aria-label="上一个主题">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12.707 15.707a1 1 0 0 1-1.414 0l-5-5a1 1 0 0 1 0-1.414l5-5a1 1 0 1 1 1.414 1.414L8.414 10l4.293 4.293a1 1 0 0 1 0 1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+      <button type="button" class="theme-icon-button" data-theme-step="1" title="下一个主题" aria-label="下一个主题">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M7.293 4.293a1 1 0 0 1 1.414 0l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 1 1-1.414-1.414L11.586 10 7.293 5.707a1 1 0 0 1 0-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+    <main class="app">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Pronunciation Coach</p>
+          <h1>Say Lab</h1>
+          <p class="lede">把难分辨的单词、短语和句子交给 AI 分析，再用 TTS 生成跟读练习稿。</p>
+        </div>
+        <div class="status-stack">
+          <div class="status-card" id="status-card">
+            <div class="status-title">服务状态</div>
+            <div class="status-line">正在读取...</div>
+          </div>
+          <button class="secondary config-toggle" id="config-toggle" type="button">配置</button>
+        </div>
+      </section>
+
+      <section class="panel config-panel" id="config-panel" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>配置</h2>
+            <p id="config-source" hidden></p>
+          </div>
+          <button class="icon-btn" id="config-reload" type="button" title="重新读取">↻</button>
+        </div>
+
+        <form id="config-form">
+          <div class="config-unlock" hidden>
+            <label>
+              配置口令
+              <input id="cfg-config-token" type="password" name="say-lab-config-token" autocomplete="off" spellcheck="false" placeholder="输入配置口令">
+            </label>
+            <button class="primary config-token-submit" id="config-token-submit" type="button">确认</button>
+          </div>
+          <div class="config-grid" hidden>
+            <section class="config-section">
+              <h3>大模型</h3>
+              <div class="form-row">
+                <label>
+                  Base URL
+                  <input id="cfg-llm-base-url" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Endpoint
+                  <input id="cfg-llm-endpoint" type="text" autocomplete="off">
+                </label>
+              </div>
+              <div class="form-row">
+                <label>
+                  Model
+                  <input id="cfg-llm-model" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Timeout
+                  <input id="cfg-llm-timeout" type="number" min="1" step="1">
+                </label>
+              </div>
+              <div class="form-row single-control">
+                <label>
+                  API Key
+                  <input id="cfg-llm-api-key" type="password" autocomplete="new-password">
+                </label>
+              </div>
+            </section>
+
+            <section class="config-section">
+              <h3>Google TTS</h3>
+              <div class="form-row">
+                <label>
+                  Project ID
+                  <input id="cfg-google-project-id" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Client Email
+                  <input id="cfg-google-client-email" type="text" autocomplete="off">
+                </label>
+              </div>
+              <div class="form-row">
+                <label>
+                  Private Key ID
+                  <input id="cfg-google-private-key-id" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Private Key
+                  <input id="cfg-google-private-key" type="password" autocomplete="new-password">
+                </label>
+              </div>
+              <div class="form-row three">
+                <label>
+                  Token URL
+                  <input id="cfg-google-token-url" type="text" autocomplete="off">
+                </label>
+                <label>
+                  TTS URL
+                  <input id="cfg-google-tts-url" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Timeout
+                  <input id="cfg-google-timeout" type="number" min="1" step="1">
+                </label>
+              </div>
+            </section>
+
+            <section class="config-section">
+              <h3>自定义 TTS（OpenAI-compatible Speech API）</h3>
+              <div class="form-row">
+                <label>
+                  Base URL
+                  <input id="cfg-custom-base-url" type="text" autocomplete="off">
+                </label>
+                <label>
+                  API Key
+                  <input id="cfg-custom-api-key" type="password" autocomplete="new-password">
+                </label>
+              </div>
+              <div class="form-row">
+                <label>
+                  Model
+                  <input id="cfg-custom-model" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Voice
+                  <input id="cfg-custom-voice" type="text" autocomplete="off">
+                </label>
+              </div>
+              <div class="form-row three">
+                <label>
+                  Format
+                  <input id="cfg-custom-format" type="text" autocomplete="off">
+                </label>
+                <label>
+                  Speed
+                  <input id="cfg-custom-speed" type="number" min="0.5" max="2" step="0.01">
+                </label>
+                <label>
+                  Timeout
+                  <input id="cfg-custom-timeout" type="number" min="1" step="1">
+                </label>
+              </div>
+            </section>
+
+            <section class="config-section">
+              <h3>TTS 路由</h3>
+              <div class="form-row">
+                <label>
+                  Default Provider
+                  <select id="cfg-tts-default-provider">
+                    <option value="auto">auto</option>
+                    <option value="google_chirp">google_chirp</option>
+                    <option value="google_wavenet">google_wavenet</option>
+                    <option value="custom">custom</option>
+                  </select>
+                </label>
+                <label>
+                  Auto Order
+                  <input id="cfg-tts-auto-order" type="text" autocomplete="off">
+                </label>
+              </div>
+              <div class="form-row three">
+                <label>
+                  Chirp Limit
+                  <input id="cfg-limit-google-chirp" type="number" min="0" step="1">
+                </label>
+                <label>
+                  WaveNet Limit
+                  <input id="cfg-limit-google-wavenet" type="number" min="0" step="1">
+                </label>
+                <label>
+                  Custom Limit
+                  <input id="cfg-limit-custom" type="number" min="0" step="1">
+                </label>
+              </div>
+            </section>
+          </div>
+
+          <div class="config-actions" hidden>
+            <button class="primary" id="config-save" type="submit">保存配置</button>
+            <p class="notice" id="config-status"></p>
+          </div>
+        </form>
+      </section>
+
+      <section class="workspace">
+        <div class="panel input-panel top-panel">
+          <div class="panel-head">
+            <div>
+              <h2>输入</h2>
+              <p>可以写词组对比、发音疑问，或一整句话。</p>
+            </div>
+            <button class="icon-btn" id="clear-btn" type="button" title="清空">×</button>
+          </div>
+
+          <textarea id="query" spellcheck="false" placeholder="输入词组对比、发音疑问，或一整句想练习的内容。"></textarea>
+
+          <div class="form-row single-control">
+            <label>
+              目标发音
+              <select id="accent">
+                <option value="">自动选择</option>
+                <optgroup label="主流语言">
+                  <option value="American English">English · American</option>
+                  <option value="Mandarin Chinese">中文普通话</option>
+                  <option value="Hindi">हिन्दी · Hindi</option>
+                  <option value="Spanish">Español · Spanish</option>
+                  <option value="Arabic">العربية · Arabic</option>
+                  <option value="French">Français · French</option>
+                  <option value="Bengali">বাংলা · Bengali</option>
+                  <option value="Portuguese">Português · Portuguese</option>
+                </optgroup>
+                <optgroup label="常用补充">
+                  <option value="British English">English · British</option>
+                  <option value="Japanese">日本語 · Japanese</option>
+                  <option value="Korean">한국어 · Korean</option>
+                  <option value="German">Deutsch · German</option>
+                  <option value="Russian">Русский · Russian</option>
+                </optgroup>
+              </select>
+            </label>
+          </div>
+
+          <div class="range-row">
+            <label for="rate">语速 <span id="rate-value">0.86</span></label>
+            <input id="rate" type="range" min="0.55" max="1.2" step="0.01" value="0.86">
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="play-input" type="button">发音</button>
+            <button class="primary" id="analyze-btn" type="button">分析</button>
+          </div>
+        </div>
+
+        <div class="panel result-panel top-panel">
+          <div class="panel-head">
+            <div>
+              <h2>发音说明</h2>
+              <p id="summary">等待分析。</p>
+            </div>
+            <div class="loader" id="loader" hidden></div>
+          </div>
+          <article class="markdown" id="explanation">
+            <p>点击“分析发音”后，这里会显示音标、关键差异、口型提示和练习句。</p>
+          </article>
+        </div>
+
+        <div class="panel script-panel">
+          <div class="panel-head">
+            <div>
+              <h2>跟读稿</h2>
+              <p>左侧朗读，右侧对照，高亮会跟随当前播放进度。</p>
+            </div>
+            <div class="script-head-actions">
+              <label class="compact-control">
+                翻译语言
+                <select id="translation-language">
+                  <option value="">自动选择</option>
+                  <option value="Simplified Chinese">简体中文</option>
+                  <option value="Traditional Chinese">繁體中文</option>
+                  <option value="English">English</option>
+                  <option value="Japanese">日本語</option>
+                </select>
+              </label>
+              <button class="icon-btn" id="copy-script" type="button" title="复制">⧉</button>
+            </div>
+          </div>
+          <div class="subtitle-board" id="subtitle-board">
+            <div class="subtitle-empty">分析后会生成双语对照跟读稿。</div>
+          </div>
+          <div class="actions">
+            <button class="primary" id="play-script" type="button">读稿</button>
+            <button class="secondary" id="pause-script" type="button" disabled>暂停</button>
+          </div>
+          <audio id="audio" controls hidden></audio>
+          <p class="notice" id="notice"></p>
+        </div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

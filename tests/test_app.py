@@ -34,6 +34,7 @@ class AppRouteTests(unittest.TestCase):
         self.original_data_file = app_module.DATA_FILE
         self.original_note_file = app_module.NOTE_FILE
         self.original_translator_config_file = app_module.TRANSLATOR_CONFIG_FILE
+        self.original_say_lab_url = app_module.SAY_LAB_URL
         self.original_cwd = Path.cwd()
 
         self.data_file.write_text(
@@ -54,6 +55,7 @@ class AppRouteTests(unittest.TestCase):
         app_module.DATA_FILE = self.original_data_file
         app_module.NOTE_FILE = self.original_note_file
         app_module.TRANSLATOR_CONFIG_FILE = self.original_translator_config_file
+        app_module.SAY_LAB_URL = self.original_say_lab_url
         self.tempdir.cleanup()
 
     def test_index_renders_websites_from_absolute_data_file(self):
@@ -72,6 +74,17 @@ class AppRouteTests(unittest.TestCase):
         self.assertIn('--app-font-midnight-body:', body)
         self.assertIn('Songti SC', body)
         self.assertIn('Hiragino Sans GB', body)
+        self.assertNotIn('translator-say-lab-link', body)
+
+    def test_index_renders_say_lab_entry_when_configured(self):
+        app_module.SAY_LAB_URL = 'https://say.example.com/'
+
+        response = self.client.get('/')
+        body = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('translator-say-lab-link', body)
+        self.assertIn('https://say.example.com/', body)
 
     def test_font_stack_sanitizer_rejects_css_breakout(self):
         self.assertEqual(

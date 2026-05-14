@@ -118,7 +118,19 @@
 
             <div class="translator-body" id="translator-body">
                 <div class="translator-editor">
-                    <label for="translator-source">原文</label>
+                    <div class="translator-source-toolbar">
+                        <label for="translator-source">原文</label>
+                        <button type="button" class="translator-speak-source" data-action="speak-source" title="朗读原文" aria-label="朗读原文">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M11 5 6 9H3v6h3l5 4V5Z"></path>
+                                <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+                                <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+                            </svg>
+                        </button>
+                        {% if page_meta.say_lab_url %}
+                        <a class="translator-say-lab-link" href="{{ page_meta.say_lab_url }}" target="_blank" rel="noopener noreferrer">Say Lab</a>
+                        {% endif %}
+                    </div>
                     <div class="translator-input-wrap">
                         <textarea id="translator-source" data-translator-source rows="4" spellcheck="false"></textarea>
                         <button type="button" class="translator-inline-action translator-submit" data-action="translate-text" title="翻译" aria-label="翻译原文">

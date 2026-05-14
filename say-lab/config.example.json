@@ -1,0 +1,44 @@
+{
+  "listen": "127.0.0.1:5567",
+  "data_file": "data/usage.json",
+  "llm": {
+    "base_url": "",
+    "endpoint": "",
+    "model": "deepseek-ai/DeepSeek-V3.2",
+    "api_key": "",
+    "timeout": 90
+  },
+  "tts": {
+    "default_provider": "auto",
+    "auto_order": ["google_chirp", "google_wavenet", "custom"],
+    "monthly_limits": {
+      "google_chirp": 800000,
+      "google_wavenet": 4000000,
+      "custom": 800000
+    },
+    "google": {
+      "project_id": "",
+      "client_email": "",
+      "private_key": "",
+      "private_key_id": "",
+      "token_url": "https://oauth2.googleapis.com/token",
+      "tts_url": "https://texttospeech.googleapis.com/v1/text:synthesize",
+      "timeout": 60
+    },
+    "google_relay": {
+      "endpoint": "",
+      "relay_secret": "",
+      "pass_google_config": false,
+      "timeout": 60
+    },
+    "custom": {
+      "base_url": "",
+      "api_key": "",
+      "model": "",
+      "voice": "",
+      "response_format": "mp3",
+      "speed": 1,
+      "timeout": 60
+    }
+  }
+}

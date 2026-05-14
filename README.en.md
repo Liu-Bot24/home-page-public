@@ -2,7 +2,7 @@
 
 ![Personal Navigation promotional banner](docs/images/promo-en.jpg)
 
-Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model.
+Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model. The repository also includes Say Lab as an optional integrated module that can run as a separate service and open from the navigation page.
 
 中文文档：[README.md](README.md)
 
@@ -21,6 +21,7 @@ Personal Navigation is a small self-hosted homepage for bookmarks, quick search,
 - Weather widget powered by QWeather
 - Local note widget saved on the server
 - Collapsible translation panel with source text, optional context, Markdown output, copy action, and configurable target language
+- Optional integrated Say Lab module for AI pronunciation guidance, cloud TTS, reading scripts, and bilingual reference text
 - Three built-in themes: default, paper-like editorial, and midnight
 
 The translator defaults to Simplified Chinese. After expanding the panel, click the “译文” label to switch the target language or enter a custom target instruction.
@@ -60,6 +61,7 @@ Set configuration with environment variables. `env.example` shows the commonly u
 | `SHORTCUT_ONE_URL` | URL opened by the first shortcut card | `https://example.com/shortcut-1` |
 | `SHORTCUT_TWO_LABEL` | Label for the second shortcut card | `Shortcut 2` |
 | `SHORTCUT_TWO_URL` | URL opened by the second shortcut card | `https://example.com/shortcut-2` |
+| `SAY_LAB_URL` | Say Lab entry URL; leave empty to hide the entry | empty |
 | `NAV_DEFAULT_TITLE_FONT` | Heading font for the default theme | `system-ui` |
 | `NAV_DEFAULT_BODY_FONT` | Body and control font for the default theme | `system-ui` |
 | `NAV_EDITORIAL_TITLE_FONT` | Heading font for the paper-like theme | `Songti SC` |
@@ -73,6 +75,8 @@ Set configuration with environment variables. `env.example` shows the commonly u
 | `NAV_TRANSLATOR_TIMEOUT` | Translation request timeout in seconds | `90` |
 
 The translator also accepts `SILICONFLOW_API_KEY` or `DEEPSEEK_API_KEY` if you prefer provider-specific environment variable names.
+
+Say Lab reads the same `.env` file. Common settings include `SAY_CONFIG_TOKEN`, `SAY_LLM_*`, `SAY_GOOGLE_*`, `SAY_TTS_GOOGLE_RELAY_*`, and `SAY_TTS_CUSTOM_*`. See the Optional Integrated Modules section below for details.
 
 Font settings accept CSS font-family values. The app does not ship font files; if a configured font is unavailable, the browser falls back to the system UI font stack.
 
@@ -121,3 +125,78 @@ The page shows theme switch buttons when presets exist. The selected theme is sa
 This app does not include a login system. If you expose it on the public internet, put it behind your own access control, reverse proxy authentication, VPN, or a private network.
 
 Keep API keys, local translation settings, notes, saved app data, and logs on the server only. Do not publish files that contain personal links, notes, or credentials.
+
+## Optional Integrated Modules
+
+### Say Lab
+
+Say Lab is an optional pronunciation practice module for Personal Navigation. It runs as a separate Go service inside the same repository and shares the root `.env` configuration with the navigation app.
+
+![Say Lab banner](docs/images/say-lab-banner.jpg)
+
+#### Enable The Navigation Entry
+
+Set `SAY_LAB_URL` in `.env` to show the Say Lab entry on the navigation page. Leave it empty to hide the entry.
+
+![Say Lab entry preview](docs/images/say-lab-entry.jpg)
+
+```text
+SAY_LAB_URL=https://say.example.com/
+```
+
+In production, run the navigation app and Say Lab with your process manager, then point `SAY_LAB_URL` to the Say Lab service through your web server.
+
+#### Run The Service
+
+```bash
+cd say-lab
+go run .
+```
+
+Default local address:
+
+```text
+http://127.0.0.1:5567
+```
+
+For deployment, set the process working directory to `say-lab` so `SAY_DATA_FILE=data/usage.json` is stored inside the Say Lab module data directory.
+
+For production, you can build a binary:
+
+```bash
+cd say-lab
+go build -o say-lab
+./say-lab
+```
+
+#### Configuration
+
+Say Lab reads configuration in this order:
+
+```text
+SAY_ENV_FILE
+NAV_ENV_FILE
+../.env
+.env
+```
+
+A root `.env` can serve both Personal Navigation and Say Lab. `say-lab/config.example.json` can be used as a reference for the configuration shape. See the [standalone Say Lab repository](https://github.com/Liu-Bot24/say-lab) for the full configuration reference.
+
+Common settings:
+
+| Setting | What It Controls |
+| --- | --- |
+| `SAY_CONFIG_TOKEN` | Optional token for the frontend config panel; leave empty to disable token checks |
+| `SAY_LLM_*` | LLM settings for pronunciation analysis |
+| `SAY_GOOGLE_*` | Google TTS service account settings |
+| `SAY_TTS_GOOGLE_RELAY_*` | Google TTS relay settings |
+| `SAY_TTS_CUSTOM_*` | Custom OpenAI-compatible Speech API settings |
+| `SAY_TTS_AUTO_ORDER` | TTS auto-selection order, default `google_chirp,google_wavenet,custom` |
+
+#### TTS Relay
+
+`SAY_TTS_GOOGLE_RELAY_ENDPOINT` and `SAY_TTS_GOOGLE_RELAY_SECRET` configure the Google TTS relay.
+
+When `SAY_TTS_GOOGLE_RELAY_PASS_CONFIG=false`, Say Lab sends only text and speech parameters to the relay, and Google credentials live in the relay service.
+
+When `SAY_TTS_GOOGLE_RELAY_PASS_CONFIG=true`, Say Lab sends local Google TTS settings with the signed relay request. Use this when the relay only forwards requests.

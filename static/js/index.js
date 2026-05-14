@@ -28,6 +28,7 @@
             isSavingNote: false,
             isTranslating: false,
             lastTranslation: "",
+            sourceUtterance: null,
             translatorTarget: localStorage.getItem(TRANSLATOR_TARGET_STORAGE_KEY) || DEFAULT_TRANSLATOR_TARGET,
             themeOrder: (dom.body.dataset.themeOrder || "").split(",").filter(Boolean),
         };
@@ -71,6 +72,7 @@
             translatorOutput: document.querySelector("[data-translator-output]"),
             translatorStatus: document.querySelector("[data-translator-status]"),
             translatorSubmit: document.querySelector('[data-action="translate-text"]'),
+            translatorSpeak: document.querySelector('[data-action="speak-source"]'),
             translatorCopy: document.querySelector('[data-action="copy-translation"]'),
             languageMenu: document.querySelector("[data-translator-language-menu]"),
             languageTrigger: document.querySelector('[data-action="toggle-language-menu"]'),
@@ -188,6 +190,12 @@
             const customLanguageButton = event.target.closest('[data-action="select-custom-language"]');
             if (customLanguageButton) {
                 selectCustomLanguage(dom, state);
+                return;
+            }
+
+            const speakSourceButton = event.target.closest('[data-action="speak-source"]');
+            if (speakSourceButton) {
+                void speakTranslatorSource(dom, state);
                 return;
             }
 
@@ -595,6 +603,159 @@
 
         setTranslatorTarget(customTarget, dom, state);
         closeLanguageMenu(dom);
+    }
+
+    async function speakTranslatorSource(dom, state) {
+        if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+            setTranslatorStatus(dom, "当前浏览器不支持朗读", "error");
+            return;
+        }
+
+        if (state.sourceUtterance) {
+            window.speechSynthesis.cancel();
+            clearSourceSpeechState(dom, state);
+            return;
+        }
+
+        const source = dom.translatorSource?.value.trim() || "";
+        if (!source) {
+            setTranslatorStatus(dom, "请输入要朗读的原文", "error");
+            dom.translatorSource?.focus();
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        const language = guessSpeechLanguage(source);
+        const utterance = new SpeechSynthesisUtterance(source);
+        const voice = chooseSpeechVoice(await loadSpeechVoices(), language);
+        utterance.lang = voice?.lang || language;
+        utterance.voice = voice || null;
+        utterance.rate = 0.95;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        utterance.onend = () => {
+            if (state.sourceUtterance === utterance) {
+                clearSourceSpeechState(dom, state);
+            }
+        };
+        utterance.onerror = (event) => {
+            if (event.error === "interrupted" || event.error === "canceled") {
+                return;
+            }
+            if (state.sourceUtterance !== utterance) {
+                return;
+            }
+            clearSourceSpeechState(dom, state);
+            setTranslatorStatus(dom, "朗读失败，请换一个浏览器语音试试", "error");
+        };
+
+        state.sourceUtterance = utterance;
+        setSourceSpeakButtonState(dom, true);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function loadSpeechVoices() {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length) {
+            return Promise.resolve(voices);
+        }
+
+        return new Promise((resolve) => {
+            const done = () => {
+                window.speechSynthesis.removeEventListener("voiceschanged", done);
+                resolve(window.speechSynthesis.getVoices());
+            };
+            window.speechSynthesis.addEventListener("voiceschanged", done, { once: true });
+            window.setTimeout(done, 220);
+        });
+    }
+
+    function clearSourceSpeechState(dom, state) {
+        state.sourceUtterance = null;
+        setSourceSpeakButtonState(dom, false);
+    }
+
+    function setSourceSpeakButtonState(dom, isSpeaking) {
+        if (!dom.translatorSpeak) {
+            return;
+        }
+
+        dom.translatorSpeak.dataset.speaking = String(isSpeaking);
+        dom.translatorSpeak.title = isSpeaking ? "停止朗读" : "朗读原文";
+        dom.translatorSpeak.setAttribute("aria-label", isSpeaking ? "停止朗读原文" : "朗读原文");
+    }
+
+    function guessSpeechLanguage(text) {
+        if (/[\u3040-\u30ff]/.test(text)) {
+            return "ja-JP";
+        }
+        if (/[\uac00-\ud7af]/.test(text)) {
+            return "ko-KR";
+        }
+        if (/[\u4e00-\u9fff]/.test(text)) {
+            return "zh-CN";
+        }
+        if (/[\u0400-\u04ff]/.test(text)) {
+            return "ru-RU";
+        }
+        if (/[\u0600-\u06ff]/.test(text)) {
+            return "ar-XA";
+        }
+        if (/[\u0900-\u097f]/.test(text)) {
+            return "hi-IN";
+        }
+        return "en-US";
+    }
+
+    function chooseSpeechVoice(voices, language) {
+        if (!voices.length) {
+            return null;
+        }
+
+        const baseLanguage = language.split("-")[0].toLowerCase();
+        const preferredNames = [
+            "samantha",
+            "alex",
+            "ava",
+            "allison",
+            "susan",
+            "daniel",
+            "serena",
+            "karen",
+            "moira",
+            "ting-ting",
+            "mei-jia",
+            "kyoko",
+            "otoya",
+            "yuna",
+            "microsoft aria",
+            "microsoft xiaoxiao",
+            "google us english",
+            "google uk english",
+            "google 普通话",
+        ];
+        const oddVoicePattern = /(compact|novelty|robot|zarvox|trinoids|boing|bubbles|bells|cellos|whisper|bad news|good news|pipe organ)/i;
+
+        return voices
+            .map((voice) => {
+                const voiceLanguage = String(voice.lang || "").toLowerCase();
+                const voiceName = String(voice.name || "").toLowerCase();
+                const exactLanguage = voiceLanguage === language.toLowerCase();
+                const sameBaseLanguage = voiceLanguage.split("-")[0] === baseLanguage;
+                let score = 0;
+                if (exactLanguage) score += 80;
+                if (sameBaseLanguage) score += 55;
+                if (voice.localService) score += 12;
+                preferredNames.forEach((name, index) => {
+                    if (voiceName.includes(name)) {
+                        score += 35 - Math.min(index, 20);
+                    }
+                });
+                if (oddVoicePattern.test(voice.name || "")) score -= 120;
+                return { voice, score };
+            })
+            .sort((a, b) => b.score - a.score)[0]?.voice || null;
     }
 
     async function translateText(dom, state) {

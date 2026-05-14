@@ -16,6 +16,40 @@ from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
+
+
+def load_env_file(path: Path) -> None:
+    if not path.exists():
+        return
+
+    try:
+        lines = path.read_text(encoding='utf-8').splitlines()
+    except OSError:
+        app.logger.exception('Failed to load env file from %s', path)
+        return
+
+    for line in lines:
+        item = line.strip()
+        if not item or item.startswith('#'):
+            continue
+        if item.startswith('export '):
+            item = item[7:].strip()
+        if '=' not in item:
+            continue
+        key, value = item.split('=', 1)
+        key = key.strip()
+        value = value.strip()
+        if not key or key in os.environ:
+            continue
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+            value = value[1:-1]
+            if item.split('=', 1)[1].strip().startswith('"'):
+                value = value.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
+        os.environ[key] = value
+
+
+load_env_file(Path(os.getenv('NAV_ENV_FILE') or BASE_DIR / '.env'))
+
 DATA_FILE = BASE_DIR / 'data.py'
 NOTE_FILE = BASE_DIR / 'note.json'
 TRANSLATOR_CONFIG_FILE = BASE_DIR / 'translator_config.json'
@@ -27,6 +61,7 @@ SHORTCUT_ONE_LABEL = os.getenv('SHORTCUT_ONE_LABEL') or 'Shortcut 1'
 SHORTCUT_ONE_URL = os.getenv('SHORTCUT_ONE_URL') or 'https://example.com/shortcut-1'
 SHORTCUT_TWO_LABEL = os.getenv('SHORTCUT_TWO_LABEL') or 'Shortcut 2'
 SHORTCUT_TWO_URL = os.getenv('SHORTCUT_TWO_URL') or 'https://example.com/shortcut-2'
+SAY_LAB_URL = (os.getenv('SAY_LAB_URL') or '').strip()
 QWEATHER_KEY = os.getenv('QWEATHER_API_KEY') or os.getenv('WEATHER_KEY') or ''
 SYSTEM_FONT_STACK = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
 DEFAULT_THEME_TITLE_FONT = 'system-ui'
@@ -306,6 +341,7 @@ def index():
             'shortcut_one_url': SHORTCUT_ONE_URL,
             'shortcut_two_label': SHORTCUT_TWO_LABEL,
             'shortcut_two_url': SHORTCUT_TWO_URL,
+            'say_lab_url': SAY_LAB_URL,
             'default_title_font': DEFAULT_TITLE_FONT,
             'default_body_font': DEFAULT_BODY_FONT,
             'editorial_title_font': EDITORIAL_TITLE_FONT,

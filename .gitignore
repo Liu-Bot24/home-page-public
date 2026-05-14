@@ -10,3 +10,6 @@ instance/
 note.json
 translator_config.json
 *.log
+say-lab/config.json
+say-lab/data/
+say-lab/say-lab
