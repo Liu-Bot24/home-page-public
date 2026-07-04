@@ -1,5 +1,7 @@
 # Personal Navigation
 
+![Stars](https://img.shields.io/github/stars/Liu-Bot24/home-page-public?style=flat&label=Stars&cache=20260704) ![Forks](https://img.shields.io/github/forks/Liu-Bot24/home-page-public?style=flat&label=Forks&cache=20260704) ![Views 14d](https://github-stats.liu-qi.cn/api/badge/Liu-Bot24/home-page-public/views14d.svg?v=4) ![Clones 14d](https://github-stats.liu-qi.cn/api/badge/Liu-Bot24/home-page-public/clones14d.svg?v=4)
+
 ![Personal Navigation promotional banner](docs/images/promo-en.jpg)
 
 Personal Navigation is a small self-hosted homepage for bookmarks, quick search, notes, weather, and AI-assisted translation. It gives you a private browser start page that can keep frequently used links, run Google/Baidu/Bing searches, show current weather, save a lightweight note, and translate text with an OpenAI-compatible chat model. The repository also includes Say Lab as an optional integrated module that can run as a separate service and open from the navigation page.
